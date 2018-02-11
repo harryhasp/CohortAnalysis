@@ -23,22 +23,22 @@ if __name__ == '__main__' :
         myReader = csv.reader(csvfile, delimiter='|')
         counter = 0
         #dateList = []
-        costDict = {}
+        costumer_dict = {}
         for row in myReader: # each row a list with one element
             counter = counter + 1
             #if counter <= 10 and counter > 1 :
             if counter > 1:
                 #print(row)
-                lineList = (' '.join(row)).split(',') # each row to string and then to list with elements
+                line_list = (' '.join(row)).split(',') # each row to string and then to list with elements
                 #print(lineList)
-                id = lineList[0]
+                id = line_list[0]
                 #print("id: %s" %id)
-                date = lineList[1]
+                date = line_list[1]
                 #print("date: %s" %date)
-                newdate = datetime.strptime(date, '%m/%d/%Y %H:%M')
-                #print(newdate)
-                #dateList.append(newdate)
-                costDict[id] = newdate # dictionary--> id : date
+                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                #print(new_date)
+                #dateList.append(new_date)
+                costumer_dict[id] = new_date # dictionary--> id : date
                 #print()
 
     """
@@ -52,9 +52,9 @@ if __name__ == '__main__' :
     print(minPeriod)
     """
 
-    minKey = min(costDict, key=costDict.get)
-    minPeriod = (costDict[minKey]).date()
-    #print(minPeriod)
+    min_key = min(costumer_dict, key=costumer_dict.get)
+    min_period = (costumer_dict[min_key]).date()
+    #print(min_period)
 
     """
     period = dateList[0].date() + timedelta(days=7)
@@ -83,158 +83,158 @@ if __name__ == '__main__' :
     with open('orders.csv', newline='') as csvfile:
         myreader = csv.reader(csvfile, delimiter='|')
         counter = 0
-        orderDict = {}
+        order_dict = {}
         for row in myreader: # each row a list with one element
             counter = counter + 1
             #if counter <= 1000 and counter > 1 :
             if counter > 1:
             #if counter > 1:
                 #print(row)
-                lineList = (' '.join(row)).split(',') # each row to string and then to list with elements
-                #print(lineList)
-                id = lineList[0]
+                line_list = (' '.join(row)).split(',') # each row to string and then to list with elements
+                #print(line_list)
+                id = line_list[0]
                 #print("id: %s" %id)
-                order_number = lineList[1]
+                order_number = line_list[1]
                 #print("order_number: %s" % order_number)
-                user_id = lineList[2]
+                user_id = line_list[2]
                 #print("user_id: %s" % user_id)
-                date = lineList[3]
+                date = line_list[3]
                 #print("date: %s" %date)
-                newdate = datetime.strptime(date, '%m/%d/%Y %H:%M')
-                #print(newdate)
-                #orderDict[user_id] = orderDict[user_id].append(newdate)
-                if user_id in orderDict :
-                    orderDict[user_id].append(newdate) # dictionary--> user_id : list_of_dates
+                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                #print(new_date)
+                #order_dict[user_id] = order_dict[user_id].append(new_date)
+                if user_id in order_dict :
+                    order_dict[user_id].append(new_date) # dictionary--> user_id : list_of_dates
                 else :
-                    tempList = [newdate]
-                    orderDict[user_id] = tempList
+                    tempList = [new_date]
+                    order_dict[user_id] = tempList
 
-    #print(orderDict)
+    #print(order_dict)
 
     """
-    print(orderDict['9568'])
-    print(len(orderDict['9568']))
-    createDay = costDict['9568']
+    print(order_dict['9568'])
+    print(len(order_dict['9568']))
+    createDay = costumer_dict['9568']
     print(createDay)
     for pray in range(1,11) :
         print(createDay + timedelta(days=pray*7))
     """
 
     # list reusable for each costumer
-    bucketOrder = []
+    bucket_order = []
     # for testing - to DEL
-    testbucketOrder = []
+    test_bucket_order = []
     # list to store the number of costumers in each cohort
-    weekCohortCount = [0 for i in range(cohorts)]
+    week_cohort_count = [0 for i in range(cohorts)]
     # final result
-    finalMatrix = [[0 for i in range(buckets*2)] for j in range(cohorts)]
+    final_matrix = [[0 for i in range(buckets*2)] for j in range(cohorts)]
 
-    for c in costDict.keys() :
-        createAccountDay = costDict[c]
+    for c in costumer_dict.keys() :
+        create_account_day = costumer_dict[c]
 
-        endPeriod = minPeriod + timedelta(days = 7*cohorts)
-        endPeriod = datetime.combine(endPeriod, datetime.min.time())
+        end_period = min_period + timedelta(days = 7*cohorts)
+        end_period = datetime.combine(end_period, datetime.min.time())
         #print(period)
 
         # if costumer is inside our cohorts
-        if createAccountDay < endPeriod :
+        if create_account_day < end_period :
 
             # add him at the corresponding cohort
             i = 1
-            period = minPeriod + timedelta(days = 7*i)
+            period = min_period + timedelta(days = 7*i)
             period = datetime.combine(period, datetime.min.time())
-            while createAccountDay >= period :
+            while create_account_day >= period :
                 i = i + 1
-                period = minPeriod + timedelta(days=7 * i)
+                period = min_period + timedelta(days=7 * i)
                 period = datetime.combine(period, datetime.min.time())
-            toCohort = i - 1
-            weekCohortCount[toCohort] = weekCohortCount[toCohort] + 1
+            to_cohort = i - 1
+            week_cohort_count[to_cohort] = week_cohort_count[to_cohort] + 1
 
 
-            if c in orderDict :
+            if c in order_dict :
                 #print(c)
-                orderDict[c].sort()
+                order_dict[c].sort()
                 j = 1
                 gate = True
                 #gate2 = None # to DEL
                 # dictionary--> user_id : list with 0 or 1 for order into bucket - last one shows bucket for 1st order
-                bucketOrder = [-1 for k in range(buckets + 1)]
+                bucket_order = [-1 for k in range(buckets + 1)]
 
-                for i in range(0,len(orderDict[c])) :
+                for i in range(0,len(order_dict[c])) :
                     gate2 = None
-                    while orderDict[c][i] > createAccountDay + timedelta(days=j * 7) and j < buckets:
+                    while order_dict[c][i] > create_account_day + timedelta(days=j * 7) and j < buckets:
                         j = j + 1
-                    if orderDict[c][i] < createAccountDay + timedelta(days=j * 7):
-                        bucketOrder[j - 1] = 1
+                    if order_dict[c][i] < create_account_day + timedelta(days=j * 7):
+                        bucket_order[j - 1] = 1
                         if gate:
-                            bucketOrder[buckets] = j - 1
+                            bucket_order[buckets] = j - 1
                             gate = None
                 """           
                 if c == '9568' : # for testing - to DEL
-                    testbucketOrder = bucketOrder
+                    test_bucket_order = bucket_order
                 """
 
                 for i in range(buckets) :
-                    if bucketOrder[i] != -1 :
-                        finalMatrix[toCohort][i] = finalMatrix[toCohort][i] + 1
-                if bucketOrder[buckets] != -1 :
-                    finalMatrix[toCohort][bucketOrder[buckets]+buckets] = finalMatrix[toCohort][bucketOrder[buckets]+buckets] + 1
+                    if bucket_order[i] != -1 :
+                        final_matrix[to_cohort][i] = final_matrix[to_cohort][i] + 1
+                if bucket_order[buckets] != -1 :
+                    final_matrix[to_cohort][bucket_order[buckets]+buckets] = final_matrix[to_cohort][bucket_order[buckets]+buckets] + 1
 
     """
     for i in range(cohorts) :
-        print(finalMatrix[i])
+        print(final_matrix[i])
     """
 
     print("Result to CohortAnalysis.csv file")
     with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
-        spamwriter = csv.writer(csvfile)
+        mywriter = csv.writer(csvfile)
 
-        firstRow = ['Cohort', 'Customers']
-        bucketFrom = 0
+        first_row = ['Cohort', 'Customers']
+        bucket_from = 0
         for i in range(buckets) :
-            bucketTo = bucketFrom + 6
-            temp = "%s-%s days"%(bucketFrom,bucketTo)
+            bucket_to = bucket_from + 6
+            temp = "%s-%s days"%(bucket_from,bucket_to)
             #print(temp)
-            firstRow.append(temp)
-            bucketFrom = bucketFrom + 7
-        spamwriter.writerow(firstRow)
+            first_row.append(temp)
+            bucket_from = bucket_from + 7
+        mywriter.writerow(first_row)
 
-        dateFrom = minPeriod
-        otherRow = []
+        date_from = min_period
+        other_row = []
         for i in range(cohorts) :
-            dateFromStr = dateFrom.strftime("%m/%d/%y")
-            dateTo = dateFrom + timedelta(days=6)
-            dateToStr = dateTo.strftime("%m/%d/%y")
-            temp = "%s - %s" % (dateFromStr, dateToStr)
+            date_from_str = date_from.strftime("%m/%d/%y")
+            date_to = date_from + timedelta(days=6)
+            date_to_str = date_to.strftime("%m/%d/%y")
+            temp = "%s - %s" % (date_from_str, date_to_str)
             #print(temp)
-            otherRow.append(temp)
-            dateFrom = dateTo + timedelta(days=1)
+            other_row.append(temp)
+            date_from = date_to + timedelta(days=1)
 
-            temp = "%s costumers" %(weekCohortCount[i])
-            otherRow.append(temp)
+            temp = "%s costumers" %(week_cohort_count[i])
+            other_row.append(temp)
 
             for j in range(buckets) :
-                if int(finalMatrix[i][j]) > 0 :
-                    portion1 = (int(finalMatrix[i][j]) * 100)/int(weekCohortCount[i])
-                    portion2 = (int(finalMatrix[i][buckets+j]) * 100) / int(weekCohortCount[i])
-                    temp = "%.2f%% costumers (%s)\n%.2f%% 1st time (%s)" % (portion1, finalMatrix[i][j], portion2, finalMatrix[i][buckets+j])
+                if int(final_matrix[i][j]) > 0 :
+                    portion1 = (int(final_matrix[i][j]) * 100)/int(week_cohort_count[i])
+                    portion2 = (int(final_matrix[i][buckets+j]) * 100) / int(week_cohort_count[i])
+                    temp = "%.2f%% costumers (%s)\n%.2f%% 1st time (%s)" % (portion1, final_matrix[i][j], portion2, final_matrix[i][buckets+j])
                 else :
                     temp = ""
-                otherRow.append(temp)
+                other_row.append(temp)
 
-                #otherRow.append(finalMatrix[i])
+                #other_row.append(final_matrix[i])
 
-            spamwriter.writerow(otherRow)
-            otherRow.clear()
+            mywriter.writerow(other_row)
+            other_row.clear()
 
     """
     print()
-    #print(orderDict)
-    print(orderDict['9568'])
-    print(testbucketOrder)
-    print(weekCohortCount)
-    print(len(orderDict.keys()))
-    print(len(costDict.keys()))
+    #print(order_dict)
+    print(order_dict['9568'])
+    print(test_bucket_order)
+    print(week_cohort_count)
+    print(len(order_dict.keys()))
+    print(len(costumer_dict.keys()))
     """
 
     print("Goodbye!")
