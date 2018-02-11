@@ -18,7 +18,8 @@ if __name__ == '__main__' :
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." %(cohorts, buckets))
 
-    with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\customers.csv', newline='') as csvfile :
+    #with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\customers.csv', newline='') as csvfile :
+    with open('customers.csv', newline='') as csvfile:
         myReader = csv.reader(csvfile, delimiter='|')
         counter = 0
         #dateList = []
@@ -78,7 +79,8 @@ if __name__ == '__main__' :
     """
 
 
-    with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\orders.csv', newline='') as csvfile :
+    #with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\orders.csv', newline='') as csvfile :
+    with open('orders.csv', newline='') as csvfile:
         myreader = csv.reader(csvfile, delimiter='|')
         counter = 0
         orderDict = {}
