@@ -2,6 +2,9 @@ import csv
 import sys
 from datetime import datetime
 from datetime import timedelta
+import pytz
+from pytz import timezone
+
 
 if __name__ == '__main__':
 
@@ -21,6 +24,7 @@ if __name__ == '__main__':
     with open('customers.csv', newline='') as csvfile:
         myReader = csv.reader(csvfile, delimiter='|')
         counter = 0
+        tzinfo = pytz.UTC
         # dateList = []
         costumer_dict = {}
         for row in myReader:  # each row a list with one element
@@ -39,6 +43,29 @@ if __name__ == '__main__':
                 # dateList.append(new_date)
                 costumer_dict[id] = new_date  # dictionary--> id : date
                 # print()
+
+
+                if counter == 2:
+                    #tzinfo = pytz.UTC
+                    print()
+                    print(date)
+                    print(new_date)
+                    #tz = pytz.timezone('US/Pacific')
+                    #print(tz)
+                    #tz.zone
+                    #print(tz.zone)
+                    #localDatetime = new_date.astimezone(tzinfo)
+                    #print(localDatetime)
+
+                    #utc = pytz.utc
+                    #print(utc)
+                    #print(utc.zone)
+                    #utc_dt = utc.localize(datetime.utcfromtimestamp(1143408899))
+                    #print(utc_dt)
+                    #now = datetime.datetime.utcnow()
+                    #print(now)
+                    print()
+
 
     """
     dateList.sort()
