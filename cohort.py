@@ -5,6 +5,59 @@ from datetime import timedelta
 import pytz
 from pytz import timezone
 
+"""
+def readcustomers( file_name ) :
+    with open('customers.csv', newline='') as csvfile:
+        my_reader = csv.reader(csvfile, delimiter='|')
+        counter = 0
+        tzinfo = pytz.UTC
+        # dateList = []
+        costumer_dict = {}
+        for row in my_reader:  # each row a list with one element
+            counter = counter + 1
+            # if counter <= 10 and counter > 1 :
+            if counter > 1:
+                # print(row)
+                line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
+                # print(lineList)
+                id = line_list[0]
+                # print("id: %s" %id)
+                date = line_list[1]
+                # print("date: %s" %date)
+                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                #dt2 = datetime.utcfromtimestamp(date)
+
+                #au_dt = au_tz.normalize(utc_dt.astimezone(au_tz))
+                #au_dt.strftime(fmt)
+                #'2006-03-27 08:34:59 AEDT+1100'
+
+                # print(new_date)
+                # dateList.append(new_date)
+                costumer_dict[id] = new_date  # dictionary--> id : date
+                # print()
+
+
+                if counter == 2:
+                    #tzinfo = pytz.UTC
+                    print()
+                    print(date)
+                    print(new_date)
+                    #tz = pytz.timezone('US/Pacific')
+                    #print(tz)
+                    #tz.zone
+                    #print(tz.zone)
+                    #localDatetime = new_date.astimezone(tzinfo)
+                    #print(localDatetime)
+
+                    #utc = pytz.utc
+                    #print(utc)
+                    #print(utc.zone)
+                    #utc_dt = utc.localize(datetime.utcfromtimestamp(1143408899))
+                    #print(utc_dt)
+                    #now = datetime.datetime.utcnow()
+                    #print(now)
+                    print()
+"""
 
 if __name__ == '__main__':
 
@@ -18,16 +71,17 @@ if __name__ == '__main__':
     buckets = 10
     # buckets = int(sys.argv[2])
 
-    print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." % (cohorts, buckets))
+    print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." %(cohorts, buckets))
 
-    # with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\customers.csv', newline='') as csvfile :
+    #readcustomers('customers.csv', )
+
     with open('customers.csv', newline='') as csvfile:
-        myReader = csv.reader(csvfile, delimiter='|')
+        my_reader = csv.reader(csvfile, delimiter='|')
         counter = 0
         tzinfo = pytz.UTC
         # dateList = []
         costumer_dict = {}
-        for row in myReader:  # each row a list with one element
+        for row in my_reader:  # each row a list with one element
             counter = counter + 1
             # if counter <= 10 and counter > 1 :
             if counter > 1:
@@ -39,6 +93,12 @@ if __name__ == '__main__':
                 date = line_list[1]
                 # print("date: %s" %date)
                 new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                #dt2 = datetime.utcfromtimestamp(date)
+
+                #au_dt = au_tz.normalize(utc_dt.astimezone(au_tz))
+                #au_dt.strftime(fmt)
+                #'2006-03-27 08:34:59 AEDT+1100'
+
                 # print(new_date)
                 # dateList.append(new_date)
                 costumer_dict[id] = new_date  # dictionary--> id : date
@@ -80,7 +140,7 @@ if __name__ == '__main__':
 
     min_key = min(costumer_dict, key=costumer_dict.get)
     min_period = (costumer_dict[min_key]).date()
-    # print(min_period)
+    print(min_period)
 
     """
     period = dateList[0].date() + timedelta(days=7)
@@ -106,10 +166,10 @@ if __name__ == '__main__':
 
     # with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\orders.csv', newline='') as csvfile :
     with open('orders.csv', newline='') as csvfile:
-        myreader = csv.reader(csvfile, delimiter='|')
+        my_reader = csv.reader(csvfile, delimiter='|')
         counter = 0
         order_dict = {}
-        for row in myreader:  # each row a list with one element
+        for row in my_reader:  # each row a list with one element
             counter = counter + 1
             # if counter <= 1000 and counter > 1 :
             if counter > 1:
