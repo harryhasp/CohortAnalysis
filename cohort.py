@@ -5,6 +5,8 @@ from datetime import timedelta
 import pytz
 from pytz import timezone
 
+gouping_timezone = 'US/Pacific'
+
 """
 def readcustomers( file_name ) :
     with open('customers.csv', newline='') as csvfile:
@@ -66,7 +68,7 @@ if __name__ == '__main__':
     for arg in sys.argv[1:]:
         print(arg)
 
-    cohorts = 30
+    cohorts = 10
     # cohorts = int(sys.argv[1])
     buckets = 10
     # buckets = int(sys.argv[2])
@@ -83,7 +85,7 @@ if __name__ == '__main__':
         costumer_dict = {}
         for row in my_reader:  # each row a list with one element
             counter = counter + 1
-            # if counter <= 10 and counter > 1 :
+            #if counter <= 10 and counter > 1 :
             if counter > 1:
                 # print(row)
                 line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
@@ -92,24 +94,30 @@ if __name__ == '__main__':
                 # print("id: %s" %id)
                 date = line_list[1]
                 # print("date: %s" %date)
-                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                #new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                new_date2 = new_date.astimezone(timezone('US/Pacific'))
                 #dt2 = datetime.utcfromtimestamp(date)
 
                 #au_dt = au_tz.normalize(utc_dt.astimezone(au_tz))
                 #au_dt.strftime(fmt)
                 #'2006-03-27 08:34:59 AEDT+1100'
 
-                # print(new_date)
+                #print(new_date)
+                #print(new_date2)
                 # dateList.append(new_date)
-                costumer_dict[id] = new_date  # dictionary--> id : date
+                #costumer_dict[id] = new_date  # dictionary--> id : date
+                costumer_dict[id] = new_date2  # dictionary--> id : date
                 # print()
 
-
+                """
                 if counter == 2:
                     #tzinfo = pytz.UTC
                     print()
                     print(date)
                     print(new_date)
+                    x = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                    print(x)
                     #tz = pytz.timezone('US/Pacific')
                     #print(tz)
                     #tz.zone
@@ -125,7 +133,7 @@ if __name__ == '__main__':
                     #now = datetime.datetime.utcnow()
                     #print(now)
                     print()
-
+                """
 
     """
     dateList.sort()
@@ -139,7 +147,11 @@ if __name__ == '__main__':
     """
 
     min_key = min(costumer_dict, key=costumer_dict.get)
-    min_period = (costumer_dict[min_key]).date()
+    print("costumer_dict[min_key]")
+    print(costumer_dict[min_key])
+    min_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
+    #min_period = (costumer_dict[min_key])
+    print("min_period")
     print(min_period)
 
     """
@@ -216,22 +228,35 @@ if __name__ == '__main__':
 
     for c in costumer_dict.keys():
         create_account_day = costumer_dict[c]
+        print("create_account_day")
+        print(create_account_day)
 
+        print("min_period")
+        print(min_period)
         end_period = min_period + timedelta(days=7 * cohorts)
+        print("end_period 1")
+        print(end_period)
         end_period = datetime.combine(end_period, datetime.min.time())
-        # print(period)
+        print("end_period 2")
+        print(end_period)
+        #end_period23 = datetime.strptime(end_period, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+        end_period23 = end_period.astimezone(timezone('US/Pacific'))
+        print("end_period 23")
+        print(end_period23)
 
         # if costumer is inside our cohorts
-        if create_account_day < end_period:
+        if create_account_day < end_period23:
 
             # add him at the corresponding cohort
             i = 1
             period = min_period + timedelta(days=7 * i)
             period = datetime.combine(period, datetime.min.time())
+            period = period.astimezone(timezone('US/Pacific'))
             while create_account_day >= period:
                 i = i + 1
                 period = min_period + timedelta(days=7 * i)
                 period = datetime.combine(period, datetime.min.time())
+                period = period.astimezone(timezone('US/Pacific'))
             to_cohort = i - 1
             week_cohort_count[to_cohort] = week_cohort_count[to_cohort] + 1
 
@@ -271,7 +296,8 @@ if __name__ == '__main__':
     """
 
     print("Result to CohortAnalysis.csv file")
-    with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
+    #with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
+    with open('CohortAnalysis2.csv', 'w', newline='') as csvfile:
         mywriter = csv.writer(csvfile)
 
         first_row = ['Cohort', 'Customers']
