@@ -8,7 +8,8 @@ from pytz import timezone
 grouping_timezone = 'US/Pacific'
 
 
-def read_customers(file_name, costumer_dict):
+def read_customers(file_name):
+    costumer_dict = {}
     with open(file_name, newline='') as csvfile:
         my_reader = csv.reader(csvfile, delimiter='|')
         line_counter = 0
@@ -29,10 +30,12 @@ def read_customers(file_name, costumer_dict):
     # min_period = (costumer_dict[min_key])
     print("min_period")
     print(starting_period)
-    return starting_period
+    print(costumer_dict)
+    return costumer_dict, starting_period
 
 
-def read_orders(file_name, order_dict):
+def read_orders(file_name):
+    order_dict = {}
     with open(file_name, newline='') as csvfile:
         my_reader = csv.reader(csvfile, delimiter='|')
         line_counter = 0
@@ -51,6 +54,7 @@ def read_orders(file_name, order_dict):
                 else:
                     temp_list = [date_grouping_timezone]
                     order_dict[cost_id] = temp_list
+    return order_dict
 
 
 def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix, costumer_dict, order_dict):
@@ -160,28 +164,29 @@ def main():
     for arg in sys.argv[1:]:
         print(arg)
 
-    cohorts = 10
+    cohorts = 30
     # cohorts = int(sys.argv[1])
     buckets = 10
     # buckets = int(sys.argv[2])
-    costumers_file_name = 'customers.csv'
+    #costumers_file_name = 'customers.csv'
+    costumers_file_name = 'myTestCustomers.csv'
     orders_file_name = 'orders.csv'
-    result_file_name = 'CohortAnalysis2.csv'
+    result_file_name = 'Cohort_Analysis12.csv'
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
 
-    costumer_dict = {}
-    starting_period = read_customers(costumers_file_name, costumer_dict)
+    # costumer_dict = {}
+    costumer_dict, starting_period = read_customers(costumers_file_name)
     print("min_period main")
     print(starting_period)
 
-    order_dict = {}
-    read_orders(orders_file_name, order_dict)
+    # order_dict = {}
+    order_dict = read_orders(orders_file_name)
 
     # List to store the number of costumers in each cohort
     week_cohort_count = [0 for i in range(cohorts)]
 
-    """2 dimensional list with final results
+    """2 dimensional list with final results -
     for each line the first val(bucket) numbers are showing the number of orders to that bucket
     and the rest val(bucket) numbers are showing the first time orders to that bucket
     """
