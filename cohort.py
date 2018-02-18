@@ -29,9 +29,9 @@ def read_customers(file_name):
     # print(costumer_dict[min_key])
     starting_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
     # min_period = (costumer_dict[min_key])
-    print("min_period")
-    print(starting_period)
-    #print(costumer_dict)
+    # print("min_period")
+    # print(starting_period)
+    # print(costumer_dict)
     return costumer_dict, starting_period
 
 
@@ -68,8 +68,8 @@ def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_
     # print("end_period 2")
     # print(final_day_last_period)
     final_day_last_period = final_day_last_period.astimezone(timezone(grouping_timezone))
-    print("final_day_last_period")
-    print(final_day_last_period)
+    # print("final_day_last_period")
+    # print(final_day_last_period)
 
     for c in costumer_dict.keys():
         create_account_day = costumer_dict[c]
@@ -174,31 +174,31 @@ def main():
 
     args = parser.parse_args()
 
-    print("Hello. Let's start")
+    print("\nHello. Let's start")
 
     """
     for arg in sys.argv[1:]:
         print(arg)
     """
 
-    #cohorts = 30
+    # cohorts = 30
     cohorts = int(args.cohorts)
-    #buckets = 10
+    # buckets = 10
     buckets = int(args.buckets)
-    #costumers_file_name = 'customers.csv'
-    #costumers_file_name = 'myTestCustomers.csv'
+    # costumers_file_name = 'customers.csv'
+    # costumers_file_name = 'myTestCustomers.csv'
     costumers_file_name = args.costumers_file_name
-    #orders_file_name = 'orders.csv'
+    # orders_file_name = 'orders.csv'
     orders_file_name = args.orders_file_name
-    #result_file_name = 'Cohort_Analysis12.csv'
+    # result_file_name = 'Cohort_Analysis12.csv'
     result_file_name = args.result_file_name
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
 
     # costumer_dict = {}
     costumer_dict, starting_period = read_customers(costumers_file_name)
-    print("min_period main")
-    print(starting_period)
+    # print("min_period main")
+    # print(starting_period)
 
     # order_dict = {}
     order_dict = read_orders(orders_file_name)
