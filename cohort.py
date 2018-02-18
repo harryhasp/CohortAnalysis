@@ -24,6 +24,15 @@ def read_customers(file_name):
                 date_grouping_timezone = date_utc.astimezone(timezone(grouping_timezone))
                 costumer_dict[cost_id] = date_grouping_timezone  # dictionary--> cost_id : date
 
+    min_key = min(costumer_dict, key=costumer_dict.get)
+    # print("costumer_dict[min_key]")
+    # print(costumer_dict[min_key])
+    starting_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
+    # min_period = (costumer_dict[min_key])
+    print("min_period")
+    print(starting_period)
+    return starting_period
+
 
 def read_orders(file_name):
     with open(file_name, newline='') as csvfile:
@@ -60,28 +69,11 @@ if __name__ == '__main__':
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." % (cohorts, buckets))
 
-    read_customers('customers.csv', )
-
-    min_key = min(costumer_dict, key=costumer_dict.get)
-    print("costumer_dict[min_key]")
-    print(costumer_dict[min_key])
-    min_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
-    # min_period = (costumer_dict[min_key])
-    print("min_period")
-    print(min_period)
+    starting_period = read_customers('customers.csv', )
+    print("min_period main")
+    print(starting_period)
 
     read_orders('orders.csv', )
-
-    # print(order_dict)
-
-    """
-    print(order_dict['9568'])
-    print(len(order_dict['9568']))
-    createDay = costumer_dict['9568']
-    print(createDay)
-    for pray in range(1,11) :
-        print(createDay + timedelta(days=pray*7))
-    """
 
     # list reusable for each costumer
     bucket_order = []
@@ -93,8 +85,8 @@ if __name__ == '__main__':
     final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
 
     print("min_period")
-    print(min_period)
-    end_period = min_period + timedelta(days=7 * cohorts)
+    print(starting_period)
+    end_period = starting_period + timedelta(days=7 * cohorts)
     print("end_period 1")
     print(end_period)
     end_period = datetime.combine(end_period, datetime.min.time())
@@ -109,31 +101,17 @@ if __name__ == '__main__':
         create_account_day = costumer_dict[c]
         # print("create_account_day")
         # print(create_account_day)
-        """
-        print("min_period")
-        print(min_period)
-        end_period = min_period + timedelta(days=7 * cohorts)
-        print("end_period 1")
-        print(end_period)
-        end_period = datetime.combine(end_period, datetime.min.time())
-        print("end_period 2")
-        print(end_period)
-        #end_period23 = datetime.strptime(end_period, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-        end_period23 = end_period.astimezone(timezone('US/Pacific'))
-        print("end_period 23")
-        print(end_period23)
-        """
         # if costumer is inside our cohorts
         if create_account_day < end_period23:
 
             # add him at the corresponding cohort
             i = 1
-            period = min_period + timedelta(days=7 * i)
+            period = starting_period + timedelta(days=7 * i)
             period = datetime.combine(period, datetime.min.time())
             period = period.astimezone(timezone('US/Pacific'))
             while create_account_day >= period:
                 i = i + 1
-                period = min_period + timedelta(days=7 * i)
+                period = starting_period + timedelta(days=7 * i)
                 period = datetime.combine(period, datetime.min.time())
                 period = period.astimezone(timezone('US/Pacific'))
             to_cohort = i - 1
@@ -189,7 +167,7 @@ if __name__ == '__main__':
             bucket_from = bucket_from + 7
         mywriter.writerow(first_row)
 
-        date_from = min_period
+        date_from = starting_period
         other_row = []
         for i in range(cohorts):
             date_from_str = date_from.strftime("%m/%d/%y")
