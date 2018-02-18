@@ -7,6 +7,7 @@ from pytz import timezone
 
 grouping_timezone = 'US/Pacific'
 costumer_dict = {}
+order_dict = {}
 
 
 def read_customers(file_name):
@@ -15,13 +16,34 @@ def read_customers(file_name):
         line_counter = 0
         for row in my_reader:  # each row a list with one element
             line_counter = line_counter + 1
-            if line_counter > 1:
+            if line_counter > 1:  # because columns have headers
                 line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
                 cost_id = line_list[0]
                 date = line_list[1]
-                date_UTC = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-                date_grouping_timezone = date_UTC.astimezone(timezone(grouping_timezone))
+                date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                date_grouping_timezone = date_utc.astimezone(timezone(grouping_timezone))
                 costumer_dict[cost_id] = date_grouping_timezone  # dictionary--> cost_id : date
+
+
+def read_orders(file_name):
+    with open(file_name, newline='') as csvfile:
+        my_reader = csv.reader(csvfile, delimiter='|')
+        line_counter = 0
+        for row in my_reader:  # each row a list with one element
+            line_counter = line_counter + 1
+            if line_counter > 1:  # because columns have headers
+                line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
+                # order_id = line_list[0]
+                # order_number = line_list[1]
+                cost_id = line_list[2]
+                date = line_list[3]
+                date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                date_grouping_timezone = date_utc.astimezone(timezone(grouping_timezone))
+                if cost_id in order_dict:  # if user has previously made an order
+                    order_dict[cost_id].append(date_grouping_timezone)  # dictionary--> user_id : list_of_dates
+                else:
+                    temp_list = [date_grouping_timezone]
+                    order_dict[cost_id] = temp_list
 
 
 if __name__ == '__main__':
@@ -48,58 +70,7 @@ if __name__ == '__main__':
     print("min_period")
     print(min_period)
 
-    """
-    period = dateList[0].date() + timedelta(days=7)
-    period = datetime.combine(period, datetime.min.time())
-    print(period)
-    i = 0
-    weekCohortCount = [0,0,0,0,0,0,0,0,0,0]
-    for tempDate in dateList :
-        if tempDate < period :
-            weekCohortCount[i] = weekCohortCount[i] + 1
-        else :
-            i = i + 1
-            if i == 10 :
-                break
-            weekCohortCount[i] = weekCohortCount[i] + 1
-            period = period + timedelta(days=7)
-            print(period)
-
-
-    print(weekCohortCount)
-    print()
-    """
-
-    # with open('C:\\Users\\sir7o\\PycharmProjects\\invitae\\orders.csv', newline='') as csvfile :
-    with open('orders.csv', newline='') as csvfile:
-        my_reader = csv.reader(csvfile, delimiter='|')
-        counter = 0
-        order_dict = {}
-        for row in my_reader:  # each row a list with one element
-            counter = counter + 1
-            # if counter <= 1000 and counter > 1 :
-            if counter > 1:
-                # if counter > 1:
-                # print(row)
-                line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
-                # print(line_list)
-                id = line_list[0]
-                # print("id: %s" %id)
-                order_number = line_list[1]
-                # print("order_number: %s" % order_number)
-                user_id = line_list[2]
-                # print("user_id: %s" % user_id)
-                date = line_list[3]
-                # print("date: %s" %date)
-                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-                # new_date2 = new_date.astimezone(timezone('US/Pacific'))
-                # print(new_date)
-                # order_dict[user_id] = order_dict[user_id].append(new_date)
-                if user_id in order_dict:
-                    order_dict[user_id].append(new_date)  # dictionary--> user_id : list_of_dates
-                else:
-                    tempList = [new_date]
-                    order_dict[user_id] = tempList
+    read_orders('orders.csv', )
 
     # print(order_dict)
 
