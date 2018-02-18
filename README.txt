@@ -1,6 +1,5 @@
 This project executes cohort analysis
 
-
 Required dependencies:
 
 1. Implemented in python3
