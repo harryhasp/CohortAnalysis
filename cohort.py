@@ -5,61 +5,24 @@ from datetime import timedelta
 import pytz
 from pytz import timezone
 
-gouping_timezone = 'US/Pacific'
+grouping_timezone = 'US/Pacific'
+costumer_dict = {}
 
-"""
-def readcustomers( file_name ) :
-    with open('customers.csv', newline='') as csvfile:
+
+def read_customers(file_name):
+    with open(file_name, newline='') as csvfile:
         my_reader = csv.reader(csvfile, delimiter='|')
-        counter = 0
-        tzinfo = pytz.UTC
-        # dateList = []
-        costumer_dict = {}
+        line_counter = 0
         for row in my_reader:  # each row a list with one element
-            counter = counter + 1
-            # if counter <= 10 and counter > 1 :
-            if counter > 1:
-                # print(row)
+            line_counter = line_counter + 1
+            if line_counter > 1:
                 line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
-                # print(lineList)
-                id = line_list[0]
-                # print("id: %s" %id)
+                cost_id = line_list[0]
                 date = line_list[1]
-                # print("date: %s" %date)
-                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
-                #dt2 = datetime.utcfromtimestamp(date)
+                date_UTC = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                date_grouping_timezone = date_UTC.astimezone(timezone(grouping_timezone))
+                costumer_dict[cost_id] = date_grouping_timezone  # dictionary--> cost_id : date
 
-                #au_dt = au_tz.normalize(utc_dt.astimezone(au_tz))
-                #au_dt.strftime(fmt)
-                #'2006-03-27 08:34:59 AEDT+1100'
-
-                # print(new_date)
-                # dateList.append(new_date)
-                costumer_dict[id] = new_date  # dictionary--> id : date
-                # print()
-
-
-                if counter == 2:
-                    #tzinfo = pytz.UTC
-                    print()
-                    print(date)
-                    print(new_date)
-                    #tz = pytz.timezone('US/Pacific')
-                    #print(tz)
-                    #tz.zone
-                    #print(tz.zone)
-                    #localDatetime = new_date.astimezone(tzinfo)
-                    #print(localDatetime)
-
-                    #utc = pytz.utc
-                    #print(utc)
-                    #print(utc.zone)
-                    #utc_dt = utc.localize(datetime.utcfromtimestamp(1143408899))
-                    #print(utc_dt)
-                    #now = datetime.datetime.utcnow()
-                    #print(now)
-                    print()
-"""
 
 if __name__ == '__main__':
 
@@ -73,84 +36,15 @@ if __name__ == '__main__':
     buckets = 10
     # buckets = int(sys.argv[2])
 
-    print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." %(cohorts, buckets))
+    print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." % (cohorts, buckets))
 
-    #readcustomers('customers.csv', )
-
-    with open('customers.csv', newline='') as csvfile:
-        my_reader = csv.reader(csvfile, delimiter='|')
-        counter = 0
-        tzinfo = pytz.UTC
-        # dateList = []
-        costumer_dict = {}
-        for row in my_reader:  # each row a list with one element
-            counter = counter + 1
-            #if counter <= 10 and counter > 1 :
-            if counter > 1:
-                # print(row)
-                line_list = (' '.join(row)).split(',')  # each row to string and then to list with elements
-                # print(lineList)
-                id = line_list[0]
-                # print("id: %s" %id)
-                date = line_list[1]
-                # print("date: %s" %date)
-                #new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
-                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-                new_date2 = new_date.astimezone(timezone('US/Pacific'))
-                #dt2 = datetime.utcfromtimestamp(date)
-
-                #au_dt = au_tz.normalize(utc_dt.astimezone(au_tz))
-                #au_dt.strftime(fmt)
-                #'2006-03-27 08:34:59 AEDT+1100'
-
-                #print(new_date)
-                #print(new_date2)
-                # dateList.append(new_date)
-                #costumer_dict[id] = new_date  # dictionary--> id : date
-                costumer_dict[id] = new_date2  # dictionary--> id : date
-                # print()
-
-                """
-                if counter == 2:
-                    #tzinfo = pytz.UTC
-                    print()
-                    print(date)
-                    print(new_date)
-                    x = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-                    print(x)
-                    #tz = pytz.timezone('US/Pacific')
-                    #print(tz)
-                    #tz.zone
-                    #print(tz.zone)
-                    #localDatetime = new_date.astimezone(tzinfo)
-                    #print(localDatetime)
-
-                    #utc = pytz.utc
-                    #print(utc)
-                    #print(utc.zone)
-                    #utc_dt = utc.localize(datetime.utcfromtimestamp(1143408899))
-                    #print(utc_dt)
-                    #now = datetime.datetime.utcnow()
-                    #print(now)
-                    print()
-                """
-
-    """
-    dateList.sort()
-    #print(dateList)
-    #print(dateList[0])
-    print(min(dateList))
-    minDate = dateList[0]
-    print(dateList[0].date())
-    minPeriod = dateList[0].date()
-    print(minPeriod)
-    """
+    read_customers('customers.csv', )
 
     min_key = min(costumer_dict, key=costumer_dict.get)
     print("costumer_dict[min_key]")
     print(costumer_dict[min_key])
     min_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
-    #min_period = (costumer_dict[min_key])
+    # min_period = (costumer_dict[min_key])
     print("min_period")
     print(min_period)
 
@@ -197,7 +91,8 @@ if __name__ == '__main__':
                 # print("user_id: %s" % user_id)
                 date = line_list[3]
                 # print("date: %s" %date)
-                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M')
+                new_date = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                # new_date2 = new_date.astimezone(timezone('US/Pacific'))
                 # print(new_date)
                 # order_dict[user_id] = order_dict[user_id].append(new_date)
                 if user_id in order_dict:
@@ -226,11 +121,24 @@ if __name__ == '__main__':
     # final result
     final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
 
+    print("min_period")
+    print(min_period)
+    end_period = min_period + timedelta(days=7 * cohorts)
+    print("end_period 1")
+    print(end_period)
+    end_period = datetime.combine(end_period, datetime.min.time())
+    print("end_period 2")
+    print(end_period)
+    # end_period23 = datetime.strptime(end_period, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+    end_period23 = end_period.astimezone(timezone('US/Pacific'))
+    print("end_period 23")
+    print(end_period23)
+
     for c in costumer_dict.keys():
         create_account_day = costumer_dict[c]
-        print("create_account_day")
-        print(create_account_day)
-
+        # print("create_account_day")
+        # print(create_account_day)
+        """
         print("min_period")
         print(min_period)
         end_period = min_period + timedelta(days=7 * cohorts)
@@ -243,7 +151,7 @@ if __name__ == '__main__':
         end_period23 = end_period.astimezone(timezone('US/Pacific'))
         print("end_period 23")
         print(end_period23)
-
+        """
         # if costumer is inside our cohorts
         if create_account_day < end_period23:
 
@@ -296,7 +204,7 @@ if __name__ == '__main__':
     """
 
     print("Result to CohortAnalysis.csv file")
-    #with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
+    # with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
     with open('CohortAnalysis2.csv', 'w', newline='') as csvfile:
         mywriter = csv.writer(csvfile)
 
