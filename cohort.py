@@ -114,43 +114,10 @@ def cohort_analysis(starting_period, week_cohort_count, final_matrix):
                                                                                    bucket_order[buckets] + buckets] + 1
 
 
-if __name__ == '__main__':
-
-    print("Hello. Let's start")
-
-    for arg in sys.argv[1:]:
-        print(arg)
-
-    cohorts = 10
-    # cohorts = int(sys.argv[1])
-    buckets = 10
-    # buckets = int(sys.argv[2])
-    costumers_file_name = 'customers.csv'
-    orders_file_name = 'orders.csv'
-    result_file_name = 'CohortAnalysis2.csv'
-
-    print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." % (cohorts, buckets))
-
-    starting_period = read_customers(costumers_file_name)
-    print("min_period main")
-    print(starting_period)
-
-    read_orders(orders_file_name)
-
-    # list to store the number of costumers in each cohort
-    week_cohort_count = [0 for i in range(cohorts)]
-    # 2 dimensional list with final results
-    final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
-
-    cohort_analysis(starting_period, week_cohort_count, final_matrix)
-
-    results_to_file(result_file_name)
-
-
-    print("Result to CohortAnalysis.csv file")
-    # with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
-    with open('CohortAnalysis2.csv', 'w', newline='') as csvfile:
-        mywriter = csv.writer(csvfile)
+def results_to_file(file_name) :
+    print("Result to {} file\n".format(file_name))
+    with open(file_name, 'w', newline='') as csvfile:
+        my_writer = csv.writer(csvfile)
 
         first_row = ['Cohort', 'Customers']
         bucket_from = 0
@@ -160,7 +127,7 @@ if __name__ == '__main__':
             # print(temp)
             first_row.append(temp)
             bucket_from = bucket_from + 7
-        mywriter.writerow(first_row)
+        my_writer.writerow(first_row)
 
         date_from = starting_period
         other_row = []
@@ -178,27 +145,50 @@ if __name__ == '__main__':
 
             for j in range(buckets):
                 if int(final_matrix[i][j]) > 0:
-                    portion1 = (int(final_matrix[i][j]) * 100) / int(week_cohort_count[i])
-                    portion2 = (int(final_matrix[i][buckets + j]) * 100) / int(week_cohort_count[i])
+                    costumer_portion = (int(final_matrix[i][j]) * 100) / int(week_cohort_count[i])
+                    first_time_portion = (int(final_matrix[i][buckets + j]) * 100) / int(week_cohort_count[i])
                     temp = "%.2f%% costumers (%s)\n%.2f%% 1st time (%s)" % (
-                        portion1, final_matrix[i][j], portion2, final_matrix[i][buckets + j])
+                        costumer_portion, final_matrix[i][j], first_time_portion, final_matrix[i][buckets + j])
                 else:
                     temp = ""
                 other_row.append(temp)
 
                 # other_row.append(final_matrix[i])
 
-            mywriter.writerow(other_row)
+            my_writer.writerow(other_row)
             other_row.clear()
 
-    """
-    print()
-    #print(order_dict)
-    print(order_dict['9568'])
-    print(test_bucket_order)
-    print(week_cohort_count)
-    print(len(order_dict.keys()))
-    print(len(costumer_dict.keys()))
-    """
 
-    print("Goodbye!")
+if __name__ == '__main__':
+
+    print("Hello. Let's start")
+
+    for arg in sys.argv[1:]:
+        print(arg)
+
+    cohorts = 10
+    # cohorts = int(sys.argv[1])
+    buckets = 10
+    # buckets = int(sys.argv[2])
+    costumers_file_name = 'customers.csv'
+    orders_file_name = 'orders.csv'
+    result_file_name = 'CohortAnalysis2.csv'
+
+    print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
+
+    starting_period = read_customers(costumers_file_name)
+    print("min_period main")
+    print(starting_period)
+
+    read_orders(orders_file_name)
+
+    # list to store the number of costumers in each cohort
+    week_cohort_count = [0 for i in range(cohorts)]
+    # 2 dimensional list with final results
+    final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
+
+    cohort_analysis(starting_period, week_cohort_count, final_matrix)
+
+    results_to_file(result_file_name)
+
+    print("Goodbye!\n")
