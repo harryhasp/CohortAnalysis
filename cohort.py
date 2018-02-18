@@ -55,6 +55,65 @@ def read_orders(file_name):
                     order_dict[cost_id] = temp_list
 
 
+def cohort_analysis(starting_period, week_cohort_count, final_matrix):
+    # print("min_period cohort_analysis")
+    # print(starting_period)
+    final_day_last_period = starting_period + timedelta(days=7 * cohorts)
+    # print("end_period 1")
+    # print(final_day_last_period)
+    final_day_last_period = datetime.combine(final_day_last_period, datetime.min.time())
+    # print("end_period 2")
+    # print(final_day_last_period)
+    final_day_last_period = final_day_last_period.astimezone(timezone(grouping_timezone))
+    print("final_day_last_period")
+    print(final_day_last_period)
+
+    for c in costumer_dict.keys():
+        create_account_day = costumer_dict[c]
+        # print("create_account_day")
+        # print(create_account_day)
+
+        # if costumer is inside our cohorts
+        if create_account_day < final_day_last_period:
+
+            # add costumer at the corresponding cohort
+            i = 1
+            period = starting_period + timedelta(days=7 * i)
+            period = datetime.combine(period, datetime.min.time())
+            period = period.astimezone(timezone(grouping_timezone))
+            while create_account_day >= period:
+                i = i + 1
+                period = starting_period + timedelta(days=7 * i)
+                period = datetime.combine(period, datetime.min.time())
+                period = period.astimezone(timezone(grouping_timezone))
+            to_cohort = i - 1
+            week_cohort_count[to_cohort] = week_cohort_count[to_cohort] + 1
+
+            if c in order_dict:
+                # print(c)
+                order_dict[c].sort()
+                j = 1
+                gate = True
+                # list with 0 or 1 for order into bucket - last one shows bucket for 1st order
+                bucket_order = [-1 for k in range(buckets + 1)]
+
+                for i in range(0, len(order_dict[c])):
+                    while order_dict[c][i] > create_account_day + timedelta(days=j * 7) and j < buckets:
+                        j = j + 1
+                    if order_dict[c][i] < create_account_day + timedelta(days=j * 7):
+                        bucket_order[j - 1] = 1
+                        if gate:
+                            bucket_order[buckets] = j - 1
+                            gate = None
+
+                for i in range(buckets):
+                    if bucket_order[i] != -1:
+                        final_matrix[to_cohort][i] = final_matrix[to_cohort][i] + 1
+                if bucket_order[buckets] != -1:
+                    final_matrix[to_cohort][bucket_order[buckets] + buckets] = final_matrix[to_cohort][
+                                                                                   bucket_order[buckets] + buckets] + 1
+
+
 if __name__ == '__main__':
 
     print("Hello. Let's start")
@@ -66,91 +125,27 @@ if __name__ == '__main__':
     # cohorts = int(sys.argv[1])
     buckets = 10
     # buckets = int(sys.argv[2])
+    costumers_file_name = 'customers.csv'
+    orders_file_name = 'orders.csv'
+    result_file_name = 'CohortAnalysis2.csv'
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . ." % (cohorts, buckets))
 
-    starting_period = read_customers('customers.csv', )
+    starting_period = read_customers(costumers_file_name)
     print("min_period main")
     print(starting_period)
 
-    read_orders('orders.csv', )
+    read_orders(orders_file_name)
 
-    # list reusable for each costumer
-    bucket_order = []
-    # for testing - to DEL
-    test_bucket_order = []
     # list to store the number of costumers in each cohort
     week_cohort_count = [0 for i in range(cohorts)]
-    # final result
+    # 2 dimensional list with final results
     final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
 
-    print("min_period")
-    print(starting_period)
-    end_period = starting_period + timedelta(days=7 * cohorts)
-    print("end_period 1")
-    print(end_period)
-    end_period = datetime.combine(end_period, datetime.min.time())
-    print("end_period 2")
-    print(end_period)
-    # end_period23 = datetime.strptime(end_period, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
-    end_period23 = end_period.astimezone(timezone('US/Pacific'))
-    print("end_period 23")
-    print(end_period23)
+    cohort_analysis(starting_period, week_cohort_count, final_matrix)
 
-    for c in costumer_dict.keys():
-        create_account_day = costumer_dict[c]
-        # print("create_account_day")
-        # print(create_account_day)
-        # if costumer is inside our cohorts
-        if create_account_day < end_period23:
+    results_to_file(result_file_name)
 
-            # add him at the corresponding cohort
-            i = 1
-            period = starting_period + timedelta(days=7 * i)
-            period = datetime.combine(period, datetime.min.time())
-            period = period.astimezone(timezone('US/Pacific'))
-            while create_account_day >= period:
-                i = i + 1
-                period = starting_period + timedelta(days=7 * i)
-                period = datetime.combine(period, datetime.min.time())
-                period = period.astimezone(timezone('US/Pacific'))
-            to_cohort = i - 1
-            week_cohort_count[to_cohort] = week_cohort_count[to_cohort] + 1
-
-            if c in order_dict:
-                # print(c)
-                order_dict[c].sort()
-                j = 1
-                gate = True
-                # gate2 = None # to DEL
-                # dictionary--> user_id : list with 0 or 1 for order into bucket - last one shows bucket for 1st order
-                bucket_order = [-1 for k in range(buckets + 1)]
-
-                for i in range(0, len(order_dict[c])):
-                    gate2 = None
-                    while order_dict[c][i] > create_account_day + timedelta(days=j * 7) and j < buckets:
-                        j = j + 1
-                    if order_dict[c][i] < create_account_day + timedelta(days=j * 7):
-                        bucket_order[j - 1] = 1
-                        if gate:
-                            bucket_order[buckets] = j - 1
-                            gate = None
-                """           
-                if c == '9568' : # for testing - to DEL
-                    test_bucket_order = bucket_order
-                """
-
-                for i in range(buckets):
-                    if bucket_order[i] != -1:
-                        final_matrix[to_cohort][i] = final_matrix[to_cohort][i] + 1
-                if bucket_order[buckets] != -1:
-                    final_matrix[to_cohort][bucket_order[buckets] + buckets] = final_matrix[to_cohort][
-                                                                                   bucket_order[buckets] + buckets] + 1
-
-    """
-    for i in range(cohorts) :
-        print(final_matrix[i])
-    """
 
     print("Result to CohortAnalysis.csv file")
     # with open('CohortAnalysis.csv', 'w', newline='') as csvfile:
