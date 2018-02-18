@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import timedelta
 import pytz
 from pytz import timezone
+import argparse
 
 grouping_timezone = 'US/Pacific'
 
@@ -30,7 +31,7 @@ def read_customers(file_name):
     # min_period = (costumer_dict[min_key])
     print("min_period")
     print(starting_period)
-    print(costumer_dict)
+    #print(costumer_dict)
     return costumer_dict, starting_period
 
 
@@ -159,19 +160,38 @@ def results_to_file(file_name, cohorts, buckets, starting_period, week_cohort_co
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Perform Cohort Analysis.')
+    parser.add_argument('cohorts', metavar='cohorts', type=int,
+                        help='an integer for the number of the cohorts')
+    parser.add_argument('buckets', metavar='buckets', type=int,
+                        help='an integer for the number of the buckets')
+    parser.add_argument('costumers_file_name', metavar='costumers_file_name', type=str,
+                        help='the name of the file with the costumers details')
+    parser.add_argument('orders_file_name', metavar='orders_file_name', type=str,
+                        help='the name of the file with the orders details')
+    parser.add_argument('result_file_name', metavar='result_file_name', type=str,
+                        help='the name of the file where the result will be written')
+
+    args = parser.parse_args()
+
     print("Hello. Let's start")
 
+    """
     for arg in sys.argv[1:]:
         print(arg)
+    """
 
-    cohorts = 30
-    # cohorts = int(sys.argv[1])
-    buckets = 10
-    # buckets = int(sys.argv[2])
+    #cohorts = 30
+    cohorts = int(args.cohorts)
+    #buckets = 10
+    buckets = int(args.buckets)
     #costumers_file_name = 'customers.csv'
-    costumers_file_name = 'myTestCustomers.csv'
-    orders_file_name = 'orders.csv'
-    result_file_name = 'Cohort_Analysis12.csv'
+    #costumers_file_name = 'myTestCustomers.csv'
+    costumers_file_name = args.costumers_file_name
+    #orders_file_name = 'orders.csv'
+    orders_file_name = args.orders_file_name
+    #result_file_name = 'Cohort_Analysis12.csv'
+    result_file_name = args.result_file_name
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
 
