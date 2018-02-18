@@ -55,7 +55,7 @@ def read_orders(file_name):
                     order_dict[cost_id] = temp_list
 
 
-def cohort_analysis(starting_period, week_cohort_count, final_matrix):
+def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix):
     # print("min_period cohort_analysis")
     # print(starting_period)
     final_day_last_period = starting_period + timedelta(days=7 * cohorts)
@@ -113,7 +113,7 @@ def cohort_analysis(starting_period, week_cohort_count, final_matrix):
                                                                                    bucket_order[buckets] + buckets] + 1
 
 
-def results_to_file(file_name):
+def results_to_file(file_name, cohorts, buckets, starting_period, week_cohort_count, final_matrix):
     print("Result to {} file\n".format(file_name))
     with open(file_name, 'w', newline='') as csvfile:
         my_writer = csv.writer(csvfile)
@@ -156,8 +156,7 @@ def results_to_file(file_name):
             other_row.clear()
 
 
-if __name__ == '__main__':
-
+def main():
     print("Hello. Let's start")
 
     for arg in sys.argv[1:]:
@@ -188,8 +187,12 @@ if __name__ == '__main__':
     """
     final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
 
-    cohort_analysis(starting_period, week_cohort_count, final_matrix)
+    cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix)
 
-    results_to_file(result_file_name)
+    results_to_file(result_file_name, cohorts, buckets, starting_period, week_cohort_count, final_matrix)
 
     print("Goodbye!\n")
+
+
+if __name__ == '__main__':
+    main()
