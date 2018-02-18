@@ -6,11 +6,9 @@ import pytz
 from pytz import timezone
 
 grouping_timezone = 'US/Pacific'
-costumer_dict = {}
-order_dict = {}
 
 
-def read_customers(file_name):
+def read_customers(file_name, costumer_dict):
     with open(file_name, newline='') as csvfile:
         my_reader = csv.reader(csvfile, delimiter='|')
         line_counter = 0
@@ -34,7 +32,7 @@ def read_customers(file_name):
     return starting_period
 
 
-def read_orders(file_name):
+def read_orders(file_name, order_dict):
     with open(file_name, newline='') as csvfile:
         my_reader = csv.reader(csvfile, delimiter='|')
         line_counter = 0
@@ -55,7 +53,7 @@ def read_orders(file_name):
                     order_dict[cost_id] = temp_list
 
 
-def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix):
+def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix, costumer_dict, order_dict):
     # print("min_period cohort_analysis")
     # print(starting_period)
     final_day_last_period = starting_period + timedelta(days=7 * cohorts)
@@ -172,11 +170,13 @@ def main():
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
 
-    starting_period = read_customers(costumers_file_name)
+    costumer_dict = {}
+    starting_period = read_customers(costumers_file_name, costumer_dict)
     print("min_period main")
     print(starting_period)
 
-    read_orders(orders_file_name)
+    order_dict = {}
+    read_orders(orders_file_name, order_dict)
 
     # List to store the number of costumers in each cohort
     week_cohort_count = [0 for i in range(cohorts)]
@@ -187,7 +187,7 @@ def main():
     """
     final_matrix = [[0 for i in range(buckets * 2)] for j in range(cohorts)]
 
-    cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix)
+    cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix, costumer_dict, order_dict)
 
     results_to_file(result_file_name, cohorts, buckets, starting_period, week_cohort_count, final_matrix)
 
