@@ -28,8 +28,8 @@ How to execute the program:
 	
 	cohorts: number of cohorts that the user wants for the analysis
 	buckets: number of buckets that the user wants for the analysis
-	costumers_file_name: the name of the file that contains the costumers details, ex. costumers.csv (it should be csv type)
-	orders_file_name: the name of the file that contains the orders details, ex. orders.csv (it should be csv type)
+	costumers_file_name: the name of the file that contains the costumers details, ex. costumers.csv (it should be csv type and on the same folder)
+	orders_file_name: the name of the file that contains the orders details, ex. orders.csv (it should be csv type and on the same folder)
 	result_file_name: the name of the file that contains the final result will be written, ex. output.csv (it should be csv type)
 
 
