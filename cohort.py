@@ -1,5 +1,4 @@
 import csv
-import sys
 from datetime import datetime
 from datetime import timedelta
 import pytz
@@ -25,13 +24,7 @@ def read_customers(file_name):
                 costumer_dict[cost_id] = date_grouping_timezone  # dictionary--> cost_id : date
 
     min_key = min(costumer_dict, key=costumer_dict.get)
-    # print("costumer_dict[min_key]")
-    # print(costumer_dict[min_key])
     starting_period = (costumer_dict[min_key]).replace(hour=00, minute=00, second=00)
-    # min_period = (costumer_dict[min_key])
-    # print("min_period")
-    # print(starting_period)
-    # print(costumer_dict)
     return costumer_dict, starting_period
 
 
@@ -44,8 +37,6 @@ def read_orders(file_name):
             line_counter = line_counter + 1
             if line_counter > 1:  # Because columns have headers
                 line_list = (' '.join(row)).split(',')  # Each row to string and then to list with elements
-                # order_id = line_list[0]
-                # order_number = line_list[1]
                 cost_id = line_list[2]
                 date = line_list[3]
                 date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
@@ -59,22 +50,12 @@ def read_orders(file_name):
 
 
 def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_matrix, costumer_dict, order_dict):
-    # print("min_period cohort_analysis")
-    # print(starting_period)
     final_day_last_period = starting_period + timedelta(days=7 * cohorts)
-    # print("end_period 1")
-    # print(final_day_last_period)
     final_day_last_period = datetime.combine(final_day_last_period, datetime.min.time())
-    # print("end_period 2")
-    # print(final_day_last_period)
     final_day_last_period = final_day_last_period.astimezone(timezone(grouping_timezone))
-    # print("final_day_last_period")
-    # print(final_day_last_period)
 
     for c in costumer_dict.keys():
         create_account_day = costumer_dict[c]
-        # print("create_account_day")
-        # print(create_account_day)
 
         if create_account_day < final_day_last_period:  # If costumer is inside our cohorts
 
@@ -92,7 +73,6 @@ def cohort_analysis(cohorts, buckets, starting_period, week_cohort_count, final_
             week_cohort_count[to_cohort] = week_cohort_count[to_cohort] + 1
 
             if c in order_dict:
-                # print(c)
                 order_dict[c].sort()
                 j = 1
                 gate = True
@@ -126,7 +106,6 @@ def results_to_file(file_name, cohorts, buckets, starting_period, week_cohort_co
         for i in range(buckets):
             bucket_to = bucket_from + 6
             temp = "%s-%s days" % (bucket_from, bucket_to)
-            # print(temp)
             first_row.append(temp)
             bucket_from = bucket_from + 7
         my_writer.writerow(first_row)
@@ -138,7 +117,6 @@ def results_to_file(file_name, cohorts, buckets, starting_period, week_cohort_co
             date_to = date_from + timedelta(days=6)
             date_to_str = date_to.strftime("%m/%d/%y")
             temp = "%s - %s" % (date_from_str, date_to_str)
-            # print(temp)
             other_row.append(temp)
             date_from = date_to + timedelta(days=1)
 
@@ -176,31 +154,16 @@ def main():
 
     print("\nHello. Let's start")
 
-    """
-    for arg in sys.argv[1:]:
-        print(arg)
-    """
-
-    # cohorts = 30
     cohorts = int(args.cohorts)
-    # buckets = 10
     buckets = int(args.buckets)
-    # costumers_file_name = 'customers.csv'
-    # costumers_file_name = 'myTestCustomers.csv'
     costumers_file_name = args.costumers_file_name
-    # orders_file_name = 'orders.csv'
     orders_file_name = args.orders_file_name
-    # result_file_name = 'Cohort_Analysis12.csv'
     result_file_name = args.result_file_name
 
     print("Performing Cohort Analysis with %d cohorts and %d buckets . . .\n" % (cohorts, buckets))
 
-    # costumer_dict = {}
     costumer_dict, starting_period = read_customers(costumers_file_name)
-    # print("min_period main")
-    # print(starting_period)
 
-    # order_dict = {}
     order_dict = read_orders(orders_file_name)
 
     # List to store the number of costumers in each cohort
