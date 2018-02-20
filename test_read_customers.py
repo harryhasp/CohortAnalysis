@@ -9,12 +9,12 @@ class TestReadCustomers(unittest.TestCase):
         import pytz
         from pytz import timezone
 
-        expected_date = datetime.strptime('5/26/2014 20:10', '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC).astimezone(
+        expected_date = datetime.strptime('5/26/2014 21:10', '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC).astimezone(
             timezone('US/Pacific'))
         expected_period = expected_date.replace(hour=00, minute=00, second=00)
         expected_dict = {}
         expected_dict["10"] = expected_date
-        expected_dict["87"] = datetime.strptime('6/10/2014 3:21', '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC).astimezone(
+        expected_dict["87"] = datetime.strptime('6/30/2014 3:21', '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC).astimezone(
             timezone('US/Pacific'))
 
         costumer_dict, starting_period = read_customers('two_customers.csv')

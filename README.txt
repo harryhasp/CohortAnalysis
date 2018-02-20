@@ -11,14 +11,18 @@ Required dependencies:
 
 2. Need of pytz library
 	since you have already installed python3, then you just need to execute:
-		$ python -m pip install pytz
+		$ pip install pytz
+
+3. Need of python-dateutil library
+    since you have already installed python3, then you just need to execute:
+        $ pip install python-dateutil
 
 
 
 Possible configuration:
 
 1.	By default, the cohort analysis is being made by grouping timezone to be PDT.
-	If another grouping timezone is needed, then it can be changed by inserting the preferable timezone at line 8 of the code
+	If another grouping timezone is needed, then it can be changed by inserting the preferable timezone at line 9 of the code
 
 
 
