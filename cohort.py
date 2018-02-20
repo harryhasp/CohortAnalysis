@@ -19,7 +19,9 @@ def read_customers(file_name):
                 line_list = (' '.join(row)).split(',')  # Each row to string and then to list with elements
                 cost_id = line_list[0]
                 date = line_list[1]
-                date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                #print(date)
+                #date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                date_utc = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.UTC)
                 date_grouping_timezone = date_utc.astimezone(timezone(grouping_timezone))
                 costumer_dict[cost_id] = date_grouping_timezone  # dictionary--> cost_id : date
 
@@ -39,7 +41,8 @@ def read_orders(file_name):
                 line_list = (' '.join(row)).split(',')  # Each row to string and then to list with elements
                 cost_id = line_list[2]
                 date = line_list[3]
-                date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                #date_utc = datetime.strptime(date, '%m/%d/%Y %H:%M').replace(tzinfo=pytz.UTC)
+                date_utc = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').replace(tzinfo=pytz.UTC)
                 date_grouping_timezone = date_utc.astimezone(timezone(grouping_timezone))
                 if cost_id in order_dict:  # If user has previously made an order
                     order_dict[cost_id].append(date_grouping_timezone)  # dictionary--> user_id : list_of_dates
